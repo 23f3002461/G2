@@ -13,21 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: prime-cache-b1c461d
         id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm
+          path: ~/.cache/pip
           key: cache-b1c461d
 
       - name: Echo cache hit/miss result
-        run: |
-          echo "Cache hit? ${{ steps.cache.outputs.cache-hit }}"
+        run: echo "Cache hit? ${{ steps.cache.outputs.cache-hit }}"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt found — skipping install"
+          fi
